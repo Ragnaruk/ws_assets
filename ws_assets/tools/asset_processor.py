@@ -24,6 +24,7 @@ class AssetProcessor:
         http_client: ClientSession,
         db_client: DBClient,
         subscription_handler: Callable[[List[AssetPoint]], Coroutine],
+        http_request_timeout: float = 1.0,
     ):
         """
         Main logic for working with assets and asset points.
@@ -36,6 +37,7 @@ class AssetProcessor:
         :param http_client: http client.
         :param db_client: database client.
         :param subscription_handler: coroutine that broadcasts asset points to clients.
+        :param http_request_timeout: timeout during http requests.
         """
 
         self._dsn: str = dsn
@@ -44,6 +46,7 @@ class AssetProcessor:
         self._subscription_handler: Callable[
             [List[AssetPoint]], Coroutine
         ] = subscription_handler
+        self._http_request_timeout: float = http_request_timeout
 
         # Dictionary where assets will be stored
         self._assets_name_to_id: Dict[str, int] = {}
@@ -60,6 +63,7 @@ class AssetProcessor:
         assets: List[Asset] = [Asset(**raw_asset) for raw_asset in raw_assets]
 
         # Cache assets
+        # Useful during the first request on startup. Probably useless afterwards
         self._assets_name_to_id = {asset.name: asset.id for asset in assets}
         self._assets_id_to_name = {asset.id: asset.name for asset in assets}
 
@@ -104,21 +108,29 @@ class AssetProcessor:
     async def _make_request_to_asset_endpoint(self) -> str:
         """Make a request to the asset endpoint."""
 
-        async with self._http_client.get(self._dsn, timeout=1) as response:
-            if response.ok:
-                page: str = await response.text()
-            else:
-                raise AssetHTTPRequestError(
-                    code=response.status, response=await response.text()
-                )
+        # HTTP client may be closed during service shutdown
+        # Check just in case
+        if not self._http_client.closed:
+            async with self._http_client.get(
+                self._dsn, timeout=self._http_request_timeout
+            ) as response:
+                if response.ok:
+                    page: str = await response.text()
+                else:
+                    raise AssetHTTPRequestError(
+                        code=response.status, response=await response.text()
+                    )
 
-        return page
+            return page
+        else:
+            # Return empty values in a correct format to avoid further problems
+            return 'null({"Rates": []}); '
 
     def _parse_asset_text(self, text: str) -> Dict[str, List[dict]]:
         """Parse text returned from the asset endpoint."""
 
         # Assets are returned in a format which is close but not exactly json, so we need to modify it a bit
-        # Page format is `null({...});`, so we need to remove extra symbols
+        # Page format is `null({...}); `, so we need to remove extra symbols
         text = text[5:-3]
 
         # Then we need to remove extra commas in objects `{...,}`
@@ -169,6 +181,9 @@ class AssetProcessor:
             )
 
             if values:
+                # DB query and websocket can't be parallelized since timestamp
+                # is generated in SQLAlchemy model. It can be changed, though, and
+                # rather easily
                 raw_asset_points: List[dict] = await self._db_client.fetchall(
                     Tables.point.insert()
                     .values(values)
@@ -186,6 +201,8 @@ class AssetProcessor:
                     for raw_asset_point in raw_asset_points
                 ]
 
+                # WebsocketManager.broadcast_asset_points blocks execution until
+                # all data is broadcast to all websockets, but it is fine
                 await self._subscription_handler(asset_points)
         except Exception as e:
             logger.exception(e)
@@ -198,6 +215,8 @@ class AssetProcessor:
         while True:
             # In order to receive data every second instead of every `time of execution + 1` seconds
             # we need to launch logic in another task
+            # This will still wait for more than 1 second, but I'm unsure than further precision
+            # is necessary
             asyncio.create_task(self._receive_asset_point())
 
             await asyncio.sleep(1)
