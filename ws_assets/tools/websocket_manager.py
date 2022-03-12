@@ -1,3 +1,4 @@
+import asyncio
 from typing import Dict, List, Optional
 from uuid import UUID, uuid4
 
@@ -90,12 +91,15 @@ class WebsocketManager:
     async def broadcast_asset_points(self, asset_points: List[AssetPoint]):
         """Broadcast assent points to all subscribed clients."""
 
+        broadcasts: list = []
+
         for asset_point in asset_points:
             if asset_point.assetId in self._clients_by_asset_id:
                 for client in self._clients_by_asset_id[asset_point.assetId]:
-                    await client.websocket.send_json(
-                        ResponseSubscribePoint(message=asset_point).dict()
+                    broadcasts.append(
+                        client.websocket.send_json(
+                            ResponseSubscribePoint(message=asset_point).dict()
+                        )
                     )
-                    logger.debug(
-                        f"Sent asset point: {str(asset_point).replace('{', '{{').replace('}', '}}')} to client: {client.client_id}."
-                    )
+
+        await asyncio.gather(*broadcasts)
