@@ -1,0 +1,25 @@
+version: 2.1
+orbs:
+  python: circleci/python@2.0.2
+  codecov: codecov/codecov@3.2.2
+
+jobs:
+  unit-tests:
+    docker:
+      - image: cimg/python:3.9.9
+    resource_class: small
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+      - run:
+          name: Run unit tests
+          command: |
+            coverage run --source=./ws_assets -m pytest ./tests -v --disable-pytest-warnings
+            coverage xml
+      - codecov/upload
+
+workflows:
+  tests:
+    jobs:
+      - unit-tests
