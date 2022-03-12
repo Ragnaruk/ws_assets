@@ -1,0 +1,16 @@
+# Web Server
+fastapi==0.75.0
+uvicorn[standard]==0.17.6
+
+# Database
+asyncpg==0.25.0
+SQLAlchemy==1.4.32
+alembic==1.7.6
+psycopg2-binary==2.9.3
+
+# Logging
+loguru==0.6.0
+
+# Other
+orjson==3.6.7
+aiohttp[speedups]==3.8.1

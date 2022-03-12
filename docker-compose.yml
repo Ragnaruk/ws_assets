@@ -1,0 +1,33 @@
+version: "3"
+services:
+
+  ws_assets:
+    restart: on-failure
+    depends_on:
+      - postgresql
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ws_assets:latest
+    ports:
+    - "8080:8080"
+    environment:
+      WS_ASSETS_ENABLE_UI: "TRUE"
+      WS_ASSETS_LOG_LEVEL: "DEBUG"
+      WS_ASSETS_POSTGRESQL_DSN: "postgresql+asyncpg://user:password@postgresql:5432/database"
+
+  ws_assets_test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ws_assets:latest
+    command: "bash -c 'coverage run --source=./ws_assets -m pytest ./tests -v --disable-pytest-warnings && coverage report'"
+
+  postgresql:
+    image: postgres:14.2
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database
+    ports:
+      - "5432:5432"

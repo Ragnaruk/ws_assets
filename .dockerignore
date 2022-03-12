@@ -1,0 +1,12 @@
+# PyCharm
+.idea
+
+# Python
+venv
+**/__pycache__
+**/.pytest_cache
+.mypy_cache
+
+# Environment
+.env
+docker-compose.override.yml
