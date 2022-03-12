@@ -16,15 +16,8 @@ from ws_assets.tools.websocket_manager import WebsocketManager
 
 def create_app() -> FastAPI:
     try:
-        import logging
-
-        logging.basicConfig(level="DEBUG")
-
         # App
         app = FastAPI(title="WS Asset")
-
-        # from ws_assets.routes.api.v1.websocket import websocket_endpoint
-        # app.add_api_websocket_route("/api/v1/websocket", websocket_endpoint)
 
         # Settings
         app.state.Settings = Settings()
@@ -100,6 +93,9 @@ def create_app() -> FastAPI:
 
                 # ClientSession
                 await app.state.ClientSession.close()
+
+                # Give a chance to coroutines to finish their tasks
+                await asyncio.sleep(2)
             except Exception as e:
                 logger.exception(e)
 
@@ -107,7 +103,8 @@ def create_app() -> FastAPI:
 
         return app
     except Exception as e:
-        # uvicorn silently ignores errors during app creation, so we need to catch them here
+        # uvicorn silently ignores errors during app creation,
+        # so we need to catch them here
         logger.exception(e)
 
         raise e
