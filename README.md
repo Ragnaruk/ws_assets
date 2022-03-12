@@ -4,13 +4,13 @@
 
 ## Запуск
 
-Для запуска сервиса необходимо добавить корневую директорию в PYTHONPATH и выполнить команду:
+Для запуска сервиса необходимо добавить корневую директорию в `PYTHONPATH` и выполнить команду:
 
 ```shell
 python ws_assets
 ```
 
-Либо запустить контейнеры `ws_assets` и `postgresql` в docker-compose.yml командой:
+Либо запустить контейнеры `ws_assets` и `postgresql` в `docker-compose.yml` командой:
 
 ```shell
 docker-compose up -d ws_assets postgresql
@@ -32,7 +32,7 @@ alembic upgrade head
 
 ## UI
 
-У сервиса присутсвует страница для тестирования эндпоинта: `http://localhost:8080/`
+У сервиса присутствует страница для тестирования эндпоинта: `http://localhost:8080/`
 
 Отображение страницы включается/выключается переменной окружения: `WS_ASSETS_ENABLE_UI`.
 
@@ -184,7 +184,7 @@ coverage run --source=./ws_assets -m pytest ./tests -v --disable-pytest-warnings
 coverage report
 ```
 
-Либо запустить контейнер `ws_assets_test` в docker-compose.yml командой:
+Либо запустить контейнер `ws_assets_test` в `docker-compose.yml` командой:
 
 ```shell
 docker-compose up ws_assets_test
