@@ -1,4 +1,8 @@
 # Тестовое задание Backend
+[![CircleCI](https://circleci.com/gh/Ragnaruk/ws_assets/tree/main.svg?style=shield)](https://circleci.com/gh/Ragnaruk/ws_assets/tree/main)
+[![codecov](https://codecov.io/gh/Ragnaruk/ws_assets/branch/main/graph/badge.svg?token=AKR3JFC0WE)](https://codecov.io/gh/Ragnaruk/ws_assets)
+[![code-style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/Ragnaruk/ws_assets/blob/main/LICENSE)
 
 Сервис для получения данных о котировках валют через websocket.
 
@@ -195,6 +199,45 @@ coverage report
 ```shell
 docker-compose up ws_assets_test
 ```
+
+### Покрытие тестов
+
+```shell
+Name                                            Stmts   Miss  Cover
+-------------------------------------------------------------------
+ws_assets/__init__.py                               0      0   100%
+ws_assets/__main__.py                               5      5     0%
+ws_assets/database/__init__.py                      0      0   100%
+ws_assets/database/tables.py                        6      0   100%
+ws_assets/exceptions.py                            12      2    83%
+ws_assets/main.py                                  51     23    55%
+ws_assets/models/__init__.py                        0      0   100%
+ws_assets/models/asset.py                          16      0   100%
+ws_assets/models/base.py                            4      0   100%
+ws_assets/models/client.py                         15      1    93%
+ws_assets/models/request.py                        21      2    90%
+ws_assets/models/response.py                       23      0   100%
+ws_assets/routers.py                               11      0   100%
+ws_assets/routes/__init__.py                        0      0   100%
+ws_assets/routes/api/__init__.py                    0      0   100%
+ws_assets/routes/api/v1/__init__.py                 0      0   100%
+ws_assets/routes/api/v1/websocket.py               36      0   100%
+ws_assets/routes/ui.py                              6      1    83%
+ws_assets/settings.py                              20      6    70%
+ws_assets/tools/__init__.py                         0      0   100%
+ws_assets/tools/asset_processor.py                 68     14    79%
+ws_assets/tools/db_client.py                       64     33    48%
+ws_assets/tools/meta/__init__.py                    0      0   100%
+ws_assets/tools/meta/base_client.py                16      6    62%
+ws_assets/tools/mocks/__init__.py                   0      0   100%
+ws_assets/tools/mocks/mock_asset_processor.py      23      0   100%
+ws_assets/tools/mocks/mock_db_client.py             7      0   100%
+ws_assets/tools/websocket_manager.py               42      2    95%
+-------------------------------------------------------------------
+TOTAL                                             446     95    79%
+```
+
+[![codecov-graph](https://codecov.io/gh/Ragnaruk/ws_assets/branch/main/graphs/icicle.svg)](https://codecov.io/gh/Ragnaruk/ws_assets/branch/main/graphs/icicle.svg)
 
 ## Дальнейшие шаги
 
