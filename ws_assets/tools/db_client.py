@@ -92,7 +92,9 @@ class DBClient(BaseClient):
         )
 
     async def close(self):
-        self.engine.dispose()
+        """Stop the database client."""
+
+        await self.engine.dispose()
 
         logger.info(
             f"Closed connection to the database: {make_url(self._dsn).render_as_string()}"
