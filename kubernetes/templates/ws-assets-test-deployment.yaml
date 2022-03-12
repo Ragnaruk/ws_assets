@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ws-assets-test
+  name: ws-assets-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ws-assets-test
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: ws-assets-test
+    spec:
+      containers:
+        - args:
+            - bash
+            - -c
+            - coverage run --source=./ws_assets -m pytest ./tests -v --disable-pytest-warnings && coverage report
+          image: ws_assets:latest
+          name: ws_assets_test
+          resources: {}
+      restartPolicy: Always
+status: {}

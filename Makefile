@@ -17,3 +17,6 @@ stop:
 
 down:
 	docker-compose down
+
+kompose:
+	kompose convert -c --with-kompose-annotation=false -o kubernetes
