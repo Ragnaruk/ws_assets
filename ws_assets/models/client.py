@@ -16,6 +16,6 @@ class WebsocketClient(BaseClass):
     @validator("websocket", pre=True)
     def websocket_type(cls, v, values, **kwargs):
         if not isinstance(v, WebSocket):
-            raise TypeError(f"Unexpected websocket type: {type(v)}")
+            raise TypeError(f"Unexpected websocket type: {type(v).__name__}")
 
         return v
