@@ -1,8 +1,7 @@
 import asyncio
-from typing import Dict, List, Optional
-from uuid import UUID, uuid4
+from typing import Dict, List
+from uuid import UUID
 
-from loguru import logger
 from starlette.websockets import WebSocket
 
 from ws_assets.models.asset import Asset, AssetPoint
@@ -89,7 +88,7 @@ class WebsocketManager:
         )
 
     async def broadcast_asset_points(self, asset_points: List[AssetPoint]):
-        """Broadcast assent points to all subscribed clients."""
+        """Broadcast asset points to all subscribed clients."""
 
         broadcasts: list = []
 
@@ -102,4 +101,6 @@ class WebsocketManager:
                         )
                     )
 
+        # Blocking is not a problem, since each `broadcast_asset_points`
+        # is started in a new task.
         await asyncio.gather(*broadcasts)

@@ -49,6 +49,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     client_id=client_id, asset_history=asset_history
                 )
 
+                # If `send_asset_history` executes for a relatively long time,
+                # some points may be lost
                 websocket_manager.add_subscription(
                     client_id=client_id, asset_id=request_subscribe.message.assetId
                 )
