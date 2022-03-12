@@ -16,10 +16,12 @@ class RequestAssets(BaseClass):
     action: Literal["assets"] = Field(description="Action type.")
     message: dict = Field(description="Empty message object.")
 
-    @validator("message")
+    @validator("message", pre=True)
     def empty_message(cls, v, values, **kwargs):
         if v:
             raise TypeError("Message object should be empty.")
+        if not isinstance(v, dict):
+            raise TypeError("Message field should be an object.")
 
         return v
 
