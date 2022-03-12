@@ -182,7 +182,8 @@ WS_ASSETS_POSTGRESQL_POOL_SIZE: PostgreSQL maximum pool size. ("10")
 
 ## Тесты
 
-Тесты находятся в папке `tests`. Для их запуска необходимо уставить все зависимости из `requirements.txt` и `requirements.dev.txt`, потом выполнить команды:
+Тесты находятся в папке `tests`. Для их запуска необходимо уставить все зависимости из `requirements.txt`,
+потом выполнить команды:
 
 ```shell
 coverage run --source=./ws_assets -m pytest ./tests -v --disable-pytest-warnings

@@ -6,9 +6,8 @@ WORKDIR ${HOME}/
 ENV PYTHONPATH ${HOME}/
 
 COPY ./requirements.txt ${HOME}/
-COPY ./requirements.dev.txt ${HOME}/
 
-RUN pip install -r ${HOME}/requirements.txt && pip install -r ${HOME}/requirements.dev.txt
+RUN pip install -r ${HOME}/requirements.txt
 
 COPY . ${HOME}/
 

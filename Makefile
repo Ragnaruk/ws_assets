@@ -5,7 +5,6 @@ pretty:
 
 req:
 	pip install -r requirements.txt
-	pip install -r requirements.dev.txt
 
 up: pretty
 	docker-compose up -d --remove-orphans
